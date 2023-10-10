@@ -46,7 +46,7 @@ export function arraysEqual(a: Array<any>, b: Array<any>): boolean {
 
 export function removeSpacesInHtml(str: string): string {
     return str
-        .replaceAll('\n', ' ')  // Whitespace -> spaces
+        .replaceAll('\n', '<br>')  // New line -> <br>  // Whitespace -> spaces
         .replaceAll('\t', ' ')  // Whitespace -> spaces
         .replaceAll(/\s+/g, ' ')
         .replaceAll(/\s+$/g, '')
@@ -102,6 +102,7 @@ export function cleanupHtmlForAmazonDescription(str: string): string {
     str = stripPrefix(str, "</p>");
     str = stripSuffix(str, "<p>");
     str = removeSpacesInHtml(str); // To remove empty paragraphs.
+    
     return str;
 }
 

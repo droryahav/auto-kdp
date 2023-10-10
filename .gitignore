@@ -4,3 +4,4 @@ coverage
 Makefile
 dist
 build
+book/*

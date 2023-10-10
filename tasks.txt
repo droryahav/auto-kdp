@@ -1,0 +1,30 @@
+
+
+TASKS:
+- find out what is newCategory1,newCategory2,newCategory3 ✅
+- seriesTitle not working 🛑
+- contributes need to be Editor ✅
+- description allow long text ✅
+- choose created with ai: Set AI generated to yes and write "ChatGPT" under TEXT, "Midjourney" under Images And "None" under Translations. ✅
+- fix cover image upload - path ✅
+- add A4 paper trim: ✅
+- check CSV is updated with id and etc - checking 🛑
+- github 🛑
+
+setup:
+
+    csv url:
+    https://docs.google.com/spreadsheets/d/1CCMRMtfzwTPNGhO14AH8KkwiPaIV2nnaeYb5RsmktoE/edit#gid=0
+
+    run with empty action to validate csv and conf:
+    npx ts-node src/index.ts --books books.csv --config books.conf --content-dir ./book --user-data ./user_data --verbose --keep-open --headless=no
+    npx ts-node src/index.ts --books books.csv --config books.conf --content-dir ./book --user-data ./user_data --verbose --keep-open --headless=no
+    Set action to book-metadata for one book and rerun. auto-kdp will create a book with a new id set its title, author, etc. It will not get ISBN, so this book will be easy to delete and you can try as much as you wish.
+
+
+first setup:
+    clone project
+    npm install
+    npm install eslint-plugin-n@15.7.0 --save-dev
+    npm install
+    npm install --save-dev ts-node

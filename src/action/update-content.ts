@@ -1,6 +1,6 @@
 import { ActionResult } from '../util/action-result.js';
 import { debug, error } from '../util/utils.js'
-import { Urls, clickSomething, fileExists, maybeClosePage } from './action-utils.js';
+import { Urls, clickSomething, fileExists, maybeClosePage, selectValue, updateTextFieldIfChanged } from './action-utils.js';
 import { Book } from '../book/book.js';
 import { ActionParams } from '../util/action-params.js';
 import { Timeouts } from '../util/timeouts.js';
@@ -116,7 +116,10 @@ export async function updateContent(book: Book, params: ActionParams): Promise<A
         // Select trim size.
         debug(book, verbose, 'Selecting trim: ' + book.paperTrim);
         let id = '';
-        if (book.paperTrim == '5x8') {
+        if (book.paperTrim == 'A4') {
+            id = '#trim-size-nonstandard-option-0-0-announce';
+        }
+        else if (book.paperTrim == '5x8') {
             id = '#trim-size-popular-option-0-0-announce';
         } else if (book.paperTrim == '5.25x8') {
             id = '#trim-size-popular-option-0-1-announce';
@@ -188,8 +191,21 @@ export async function updateContent(book: Book, params: ActionParams): Promise<A
     // Whether AI-generated
     // TODO: For now only support "No", but would be nice to support "Yes".
     debug(book, verbose, "Clicking whether AI-generated")
-    await page.click('#section-generative-ai div[aria-labelledby="generative-ai-questionnaire-question"] div[data-a-accordion-row-name="no"] a', Timeouts.SEC_10);
+    await page.click('#section-generative-ai div[aria-labelledby="generative-ai-questionnaire-question"] div[data-a-accordion-row-name="yes"] a', Timeouts.SEC_10);
     debug(book, verbose, "Clicking Confirm that my answers are accurate (this field only shows sometimes)")
+
+    await selectValue('#generative-ai-questionnaire-images', 'MANY_AND_EXTENSIVE', 'Many AI-generated images, with extensive editing', page, book, verbose);
+    await page.waitForTimeout(Timeouts.SEC_5);  // Just in case.
+    await updateTextFieldIfChanged('input[aria-labelledby="generative-ai-questionnaire-images-tools-prompt"]', "Midjourney", 'Midjourney', page, book, verbose);
+
+
+    await selectValue('#generative-ai-questionnaire-text', 'PARTIAL_AND_EXTENSIVE', 'Some sections, with extensive editing', page, book, verbose);
+    await page.waitForTimeout(Timeouts.SEC_5);  // Just in case.
+    await updateTextFieldIfChanged('input[aria-labelledby="generative-ai-questionnaire-text-tools-prompt"]', "ChatGPT", 'ChatGPT', page, book, verbose);
+
+    await selectValue('#generative-ai-questionnaire-translations', 'NONE', 'NONE', page, book, verbose);
+    await page.waitForTimeout(Timeouts.SEC_5);  // Just in case.
+
     try {
         await page.click('#section-generative-ai .a-checkbox input', Timeouts.SEC_5)
     } catch (e) {

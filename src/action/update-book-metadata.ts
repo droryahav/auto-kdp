@@ -52,7 +52,7 @@ export async function updateBookMetadata(book: Book, params: ActionParams): Prom
     await updateTextFieldIfChanged('#data-print-book-contributors-0-first-name', book.illustratorFirstName, 'illustrator\'s first name', page, book, verbose);
     await updateTextFieldIfChanged('#data-print-book-contributors-0-last-name', book.illustratorLastName, 'illustrator\'s last name', page, book, verbose);
     if (book.illustratorFirstName != '' || book.illustratorLastName != '') {
-      await selectValue('#data-print-book-contributors-0-role-native', 'illustrator', 'illustrator\'s role', page, book, verbose);
+      await selectValue('#data-print-book-contributors-0-role-native', 'editor', 'editor\'s role', page, book, verbose);
     }
   }
 
@@ -192,7 +192,7 @@ async function initCategories(page: PageInterface, book: Book, verbose: boolean)
     // and will be overridden immediately. Pick anything that has at least 3 subcategories,
     // and ideally is notthing embarrasing, just in case due to some mistake it
     // becomes visible to users.
-    case "us": dummyCategory = '{"level":0,"key":"Calendars","nodeId":"3248857011"}'; break;
+    case "us": dummyCategory = '{"level":0,"key":"Children\'s Books","nodeId":"4"}'; break;
     case "pl": dummyCategory = '{"level":0,"key":"Beletrystyka","nodeId":"20788878031"}'; break;
     case "es": dummyCategory = '{"level":0,"key":"Arte y fotografía","nodeId":"902486031"}'; break;
     case "de": dummyCategory = '{"level":0,"key":"Biografien & Erinnerungen","nodeId":"187254"}'; break;

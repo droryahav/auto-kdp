@@ -158,7 +158,7 @@ export class Book {
     this.newCategory1 = getValue(Keys.NEW_CATEGORY1);
     this.newCategory2 = getValue(Keys.NEW_CATEGORY2);
     this.newCategory3 = getValue(Keys.NEW_CATEGORY3);
-    this.coverLocalFile = contentDir + '/' + getValue(Keys.COVER_FILE);
+    this.coverLocalFile = "Z:\\KDP Projects\\uploadAutomation\\covers\\"+getValue(Keys.COVER_FILE);
     this.description = getValue(Keys.DESCRIPTION);
     this.illustratorFirstName = getValue(Keys.ILLUSTRATOR_FIRST_NAME);
     this.illustratorLastName = getValue(Keys.ILLUSTRATOR_LAST_NAME);
@@ -174,7 +174,7 @@ export class Book {
       throw new Error("Unsupported book language: " + this.language);
     }
     this.manuscriptCreationCommand = getValue(Keys.MANUSCRIPT_CREATION_COMMAND);
-    this.manuscriptLocalFile = contentDir + '/' + getValue(Keys.MANUSCRIPT_FILE);
+    this.manuscriptLocalFile = "Z:\\KDP Projects\\uploadAutomation\\interiors\\"+getValue(Keys.MANUSCRIPT_FILE);
     this.notes = getValue(Keys.NOTES);
     this.priceAu = parseFloatOrNull(getValue(Keys.PRICE_AU));
     this.priceCa = parseFloatOrNull(getValue(Keys.PRICE_CA));
@@ -203,10 +203,10 @@ export class Book {
 
     // Handle special actions
     if (this.action == 'all') {
-      this.action = 'book-metadata:assign-isbn:produce-manuscript:content:scrape-isbn:pricing:set-series-title:scrape:publish:scrape';
+      this.action = 'book-metadata:set-series-title:assign-isbn:produce-manuscript:content:scrape-isbn:pricing:scrape:publish:scrape';
       /* after the book is published, do the 'scrape-amazon-image' action */
     } else if (this.action == 'all-but-no-publish') {
-      this.action = 'book-metadata:assign-isbn:produce-manuscript:content:scrape-isbn:pricing:set-series-title:scrape';
+      this.action = 'book-metadata:set-series-title:assign-isbn:produce-manuscript:content:scrape-isbn:pricing:scrape';
     }
   }
 

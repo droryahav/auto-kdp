@@ -68,6 +68,14 @@ export async function updateBookMetadata(book: Book, params: ActionParams): Prom
   // TODO: We only support non-adult content.
   await clickSomething('#data-print-book-is-adult-content input[value=\'false\']', 'non-adult content', page, book, verbose);
 
+  await selectValue('#data-print-book-reading-interest-age-start-input-native', "0", 'baby', page, book, verbose);
+  await page.waitForTimeout(Timeouts.SEC_1);
+
+  await selectValue('#data-print-book-reading-interest-age-end-input-native', "18", '18+', page, book, verbose);
+  await page.waitForTimeout(Timeouts.SEC_1);
+
+
+
   // Keywords
   await updateTextFieldIfChanged('#data-print-book-keywords-0', book.keyword0, "keyword 0", page, book, verbose);
   await updateTextFieldIfChanged('#data-print-book-keywords-1', book.keyword1, "keyword 1", page, book, verbose);
@@ -80,6 +88,10 @@ export async function updateBookMetadata(book: Book, params: ActionParams): Prom
   // Primary marketplace.
   await selectValue('#data-print-book-home-marketplace .a-native-dropdown', book.primaryMarketplace, 'primary marketplace', page, book, verbose);
   await page.waitForTimeout(Timeouts.SEC_1);
+
+  // set print_book large
+  await clickSomething('#data-print-book-large-print', 'print_book', page, book, verbose);
+
 
   // Categories. First figure out which categories should be used.
   // NOTE: Category update needs to be the *LAST* action we do. For some reason it keeps "reloading"

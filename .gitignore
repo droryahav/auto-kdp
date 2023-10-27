@@ -5,3 +5,8 @@ Makefile
 dist
 build
 book/*
+books.csv
+books.csv.new
+lock.txt
+output.txt
+books.csv.new

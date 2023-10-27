@@ -54,6 +54,10 @@ export async function updatePricing(book: Book, params: ActionParams): Promise<A
 }
 
 async function updateMarketplace(marketplace: string, page: PageInterface, book: Book, verbose: boolean): Promise<boolean> {
+  if (marketplace !== 'us') {
+    return true; // Or whatever default value you wish to return
+  }
+
   const id = `#data-pricing-print-${marketplace}-price-input input`;
   const newPrice = book.getPriceForMarketplace(marketplace);
   return await updateTextFieldIfChanged(id, '' + newPrice, 'price for ' + marketplace + " marketplace", page, book, verbose);

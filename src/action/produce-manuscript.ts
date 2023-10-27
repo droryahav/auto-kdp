@@ -16,6 +16,11 @@ export async function produceManuscript(book: Book, params: ActionParams): Promi
   const commandLine = book.manuscriptCreationCommand.replace("<ISBN>", book.isbn);
   debug(book, verbose, `Running command: ${commandLine}`);
   ChildProcess.execSync(commandLine, { stdio: 'inherit' });
+
+  console.log("lasflas");
+  console.log(book.manuscriptLocalFile);
+
+
   if (!fileExists(book.manuscriptLocalFile)) {
     error(book, `Manuscript file does note exist: ${book.manuscriptLocalFile}`);
     return new ActionResult(false).doNotRetry();

@@ -27,6 +27,63 @@ import { Book } from './book/book.js';
 import { BrowserInterface, PuppeteerBrowser } from './browser.js';
 
 import pkg from 'sleep';
+
+import fs from 'fs';
+
+const lockLocation = "Z:\\KDP Projects\\uploadAutomation\\lock.txt";
+
+
+const logStream = fs.createWriteStream('output.txt', { flags: 'a' });
+const originalConsoleLog = console.log;
+const originalConsoleError = console.error;
+const originalConsoleDebug = console.debug;
+import util from 'util';
+
+console.log = function (message) {
+  const time = new Date().toISOString();
+  logStream.write(`[LOG][${time}]: ${util.format(message)}\n`);
+  originalConsoleLog.apply(console, arguments);
+};
+
+console.error = function (message) {
+  const time = new Date().toISOString();
+  logStream.write(`[ERROR][${time}]: ${util.format(message)}\n`);
+  originalConsoleError.apply(console, arguments);
+};
+
+console.debug = function (message) {
+  const time = new Date().toISOString();
+  logStream.write(`[DEBUG][${time}]: ${util.format(message)}\n`);
+  originalConsoleDebug.apply(console, arguments);
+};
+
+console.log('This is a log message');
+console.error('This is an error message');
+console.debug('This is a debug message');
+
+function readLockedTitles() {
+  try {
+
+    return new Set(fs.readFileSync(lockLocation, 'utf8').split('\n'));
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      // If the file doesn't exist, return an empty set
+      return new Set();
+    } else {
+      throw error;
+    }
+  }
+}
+
+function addTitleToLock(title, lockedTitles) {
+  if (!lockedTitles.has(title)) {
+    fs.appendFileSync(lockLocation, title + '\n', 'utf8');
+    lockedTitles.add(title);  // Update the in-memory set.
+  }
+}
+
+
+
 const { sleep } = pkg;
 
 
@@ -67,8 +124,17 @@ async function _startPuppeteerBrowser(
   return PuppeteerBrowser.create(headless, userDataDir);
 }
 
-async function processOneBook(bookFile: BookFile, bookList: BookList, book: Book, params: ActionParams) {
+async function processOneBook(bookFile, bookList, book, params, lockedTitles) {
   const verbose = params.verbose;
+
+  if (lockedTitles.has(book.title)) {
+    debug(book, verbose, `Skipped processing ${book.title} as it's already processed.`);
+    return 0;
+  }
+
+  // Add the processed title to the lock file.
+  addTitleToLock(book.title, lockedTitles);
+
   debug(book, verbose, "");
   debug(book, verbose, "--- START ----------------------- ");
   debug(book, verbose, "\n" + book.toString());
@@ -78,6 +144,9 @@ async function processOneBook(bookFile: BookFile, bookList: BookList, book: Book
   const durationSeconds = (performance.now() - startTime) / 1000;
 
   debug(book, verbose, `DONE took ${Math.round(durationSeconds)} secs`);
+
+
+
   return durationSeconds;
 }
 
@@ -154,7 +223,9 @@ async function mainWithOptions(
     for (let book of bookList.getBooks()) {
       const shouldIgnore = book.action == '' || (scrapeOnly && book.hasNonScrapingAction());
       if (!shouldIgnore) {
-        const durationSeconds = await processOneBook(bookFile, bookList, book, params);
+
+        let lockedTitles = readLockedTitles();
+        const durationSeconds = await processOneBook(bookFile, bookList, book, params, lockedTitles);
 
         //
         // Handle many consecutive fast operations

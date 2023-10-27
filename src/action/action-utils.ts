@@ -19,7 +19,7 @@ export let Urls = {
 
 export function fileExists(path: string): boolean {
     try {
-        console.log(path);
+        console.log("pathtest", path);
         if (fs.existsSync(path)) {
             return true;
         }
